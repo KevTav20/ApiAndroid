@@ -1,4 +1,4 @@
-from pydantic import EmailStr, field_validator
+from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Relationship, Session, select
 from enum import Enum
 from db import engine
@@ -27,7 +27,6 @@ class BookCreate(BookBase):
 class BookUpdate(BookBase):
     pass
 
-
 class Book(BookBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     users: list["User"] = Relationship(
@@ -35,23 +34,11 @@ class Book(BookBase, table=True):
     )
 
 class UserBase(SQLModel):
-    name: str = Field(default=None)
-    email: EmailStr = Field(default=None)
+    email: str = Field(default=None)  # Sin usar EmailStr
     password: str | None = Field(default=None)
 
-
-    @field_validator("email")
-    @classmethod
-    def validate_email(cls, value):
-        session = Session(engine)
-        query = select(User).where(User.email == value)
-        result = session.exec(query).first()
-        if result:
-            raise ValueError("This email is alredy registered")
-        return value
-
 class UserCreate(UserBase):
-    pass
+    name: str = Field(default=None)
 
 class UserUpdate(UserBase):
     pass
@@ -61,3 +48,7 @@ class User(UserBase, table=True):
     books: list[Book] = Relationship(
         back_populates="users", link_model=UserBooks
     )
+    is_logged: bool = Field(default=False)
+
+class LoginRequest(UserBase):
+    pass
