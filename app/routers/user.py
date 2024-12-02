@@ -1,13 +1,29 @@
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select
+from models import User, UserCreate, UserUpdate, LoginRequest
 from db import SessionDep
-from models import (
-    User, UserCreate, UserUpdate, UserBooks, Book, StatusEnum, LoginRequest
-)
+from typing import List
 
 router = APIRouter()
 
-@router.post("/login", tags=["auth"], summary="User login")
+
+# 1. Crear un nuevo usuario
+@router.post("/users", response_model=User, tags=["Users"], summary="Create a new user")
+async def create_user(user_data: UserCreate, session: SessionDep):
+    # Verificar que el correo no exista previamente
+    existing_user = session.exec(select(User).where(User.email == user_data.email)).first()
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+
+    user = User(email=user_data.email, password=user_data.password, name=user_data.name)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
+
+
+# 2. Login de usuario (sin validación de contraseña)
+@router.post("/users/login", tags=["Users"], summary="User login")
 async def login(request: LoginRequest, session: SessionDep):
     query = select(User).where(User.email == request.email)
     user_db = session.exec(query).first()
@@ -18,22 +34,21 @@ async def login(request: LoginRequest, session: SessionDep):
             detail="Invalid email or password"
         )
 
-    user_db.is_logged = True
-    session.add(user_db)
-    session.commit()
-    session.refresh(user_db)
-
+    # Al autenticar correctamente, se retorna el is_logged como True
     return {
         "id": user_db.id,
-        "is_logged": user_db.is_logged,
-        "message": "Login successful"
+        "message": "Login successful",
+        "is_logged": True  # Agregando is_logged a la respuesta
     }
 
-@router.get("/users", response_model=list[User], tags=["users"], summary="List all users")
+# 3. Listar todos los usuarios
+@router.get("/users", response_model=List[User], tags=["Users"], summary="List all users")
 async def list_users(session: SessionDep):
     return session.exec(select(User)).all()
 
-@router.get("/users/{user_id}", response_model=User, tags=["users"], summary="Get user by ID")
+
+# 4. Obtener usuario por ID
+@router.get("/users/{user_id}", response_model=User, tags=["Users"], summary="Get user by ID")
 async def read_user(user_id: int, session: SessionDep):
     user_db = session.get(User, user_id)
     if not user_db:
@@ -43,67 +58,13 @@ async def read_user(user_id: int, session: SessionDep):
         )
     return user_db
 
-@router.get("/users/{user_id}/books", tags=["users"], summary="Get user's books by status")
-async def read_books_to_user(
-    user_id: int,
-    session: SessionDep,
-    book_status: StatusEnum = Query(..., description="Filter books by status")
-):
-    user_db = session.get(User, user_id)
-    if not user_db:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User doesn't exist"
-        )
 
-    query = (
-        select(UserBooks)
-        .where(UserBooks.user_id == user_id)
-        .where(UserBooks.status == book_status)
-    )
-    books = session.exec(query).all()
-    return books
-
-@router.post("/users/create", response_model=User, tags=["users"], summary="Create a new user")
-async def create_user(user_data: UserCreate, session: SessionDep):
-    user = User(**user_data.dict())
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-    return user
-
-@router.post("/users/{user_id}/books/{book_id}", tags=["users"], summary="Associate book with user")
-async def subscribe_book_to_user(
-    user_id: int,
-    book_id: int,
-    session: SessionDep,
-    book_status: StatusEnum = Query(..., description="Book status")
-):
-    user_db = session.get(User, user_id)
-    book_db = session.get(Book, book_id)
-
-    if not user_db or not book_db:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="The user or book doesn't exist"
-        )
-
-    user_book_db = UserBooks(
-        book_id=book_db.id,
-        user_id=user_db.id,
-        status=book_status
-    )
-
-    session.add(user_book_db)
-    session.commit()
-    session.refresh(user_book_db)
-    return user_book_db
-
-@router.patch("/users/{user_id}", response_model=User, status_code=status.HTTP_200_OK, tags=["users"], summary="Update user by ID")
+# 5. Actualizar usuario por ID
+@router.patch("/users/{user_id}", response_model=User, tags=["Users"], summary="Update user by ID")
 async def update_user(
-    user_id: int,
-    user_data: UserUpdate,
-    session: SessionDep
+        user_id: int,
+        user_data: UserUpdate,
+        session: SessionDep
 ):
     user_db = session.get(User, user_id)
     if not user_db:
@@ -120,7 +81,9 @@ async def update_user(
     session.refresh(user_db)
     return user_db
 
-@router.delete("/users/{user_id}", tags=["users"], summary="Delete user")
+
+# 6. Eliminar un usuario por ID
+@router.delete("/users/{user_id}", tags=["Users"], summary="Delete user")
 async def delete_user(user_id: int, session: SessionDep):
     user_db = session.get(User, user_id)
     if not user_db:
@@ -132,3 +95,5 @@ async def delete_user(user_id: int, session: SessionDep):
     session.delete(user_db)
     session.commit()
     return {"detail": "User deleted successfully"}
+
+
