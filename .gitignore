@@ -1,3 +1,68 @@
-# Ignorar la carpeta del entorno virtual
+# Python
+*.pyc
+*.pyo
+*.pyd
+_pycache_/
+*.sqlite3
+
+# Entornos virtuales
+env/
 venv/
+ENV/
+*.egg-info/
+.eggs/
 .venv/
+pip-log.txt
+
+# Archivos creados por el intérprete
+*.log
+*.pot
+*.mo
+*.py[cod]
+*.coverage
+.coverage.
+
+# Archivos y directorios de configuración
+.DS_Store
+.idea/
+*.swp
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# FastAPI y Uvicorn
+instance/
+*.pid
+*.sock
+
+# Logs
+*.log
+*.out
+*.err
+
+# Configuración local
+.env
+.env.*
+*.ini
+*.cfg
+
+# Bases de datos
+*.db
+*.sql
+*.sqlite3
+
+# Archivos específicos de Qiskit
+*.qasm
+
+# Jupyter Notebook (por si añades análisis)
+.ipynb_checkpoints/
+
+# Archivos específicos de matplotlib u otros gráficos
+.matplotlib/
+
+# Otros archivos que podrían ser útiles ignorar
+_pycache_/
+*.iml
+*.class
+*.so
+*.ipynb
