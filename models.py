@@ -20,9 +20,9 @@ class UserBooks(SQLModel, table=True):
 class BookBase(SQLModel):
     title: str = Field(default=None)
     author: str = Field(default=None)
-    year: Optional[int] = Field(default=None)  # Cambié 'str' por 'Optional[int]'
+    year: Optional[int] = Field(default=None)
     category: str = Field(default=None)
-    num_pages: Optional[int] = Field(default=None)  # Cambié 'int' por 'Optional[int]'
+    num_pages: Optional[int] = Field(default=None)
     image: Optional[str] = Field(default=None)
     synopsis: Optional[str] = Field(default=None)
 
@@ -46,7 +46,7 @@ class Book(BookBase, table=True):
 
 # Base de modelo para los usuarios (común entre la creación, actualización y el usuario en sí)
 class UserBase(SQLModel):
-    email: EmailStr = Field(default=None, unique=True)  # Usé 'EmailStr' de Pydantic para validación de email
+    email: EmailStr = Field(default=None, unique=True)
     password: str = Field(default=None)
 
 # Modelo para crear un usuario
