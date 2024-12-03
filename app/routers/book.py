@@ -1,4 +1,6 @@
+from dns.e164 import query
 from fastapi import APIRouter, HTTPException, status, Query
+from sqlalchemy import func
 from sqlmodel import select
 from models import Book, BookCreate, BookUpdate
 from db import SessionDep
@@ -88,3 +90,19 @@ async def delete_book(book_id: int, session: SessionDep):
     session.delete(book_db)
     session.commit()
     return {"detail": "Book deleted successfully"}
+
+# 7. Buscar libros por nombre (insensible a mayúsculas/minúsculas)
+@router.get("/books/search/{book_name}", response_model=List[Book], tags=["Books"], summary="Search books by name")
+async def search_books_by_name(session: SessionDep, book_name: str):
+    # Usar func.lower para ignorar mayúsculas y minúsculas
+    query = select(Book).where(func.lower(Book.title) == func.lower(book_name))
+    books = session.exec(query).all()
+
+    if not books:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No books found with the name '{book_name}'"
+        )
+
+    return books
+
