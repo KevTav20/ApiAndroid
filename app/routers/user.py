@@ -1,11 +1,11 @@
+import random
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select
-from models import User, UserCreate, UserUpdate, LoginRequest
+from models import User, UserCreate, UserUpdate, LoginRequest, PROFILE_PICTURES
 from db import SessionDep
 from typing import List
 
 router = APIRouter()
-
 
 # 1. Crear un nuevo usuario
 @router.post("/users", response_model=User, tags=["Users"], summary="Create a new user")
@@ -15,14 +15,22 @@ async def create_user(user_data: UserCreate, session: SessionDep):
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
-    user = User(email=user_data.email, password=user_data.password, name=user_data.name)
+    # Asignar una imagen aleatoria si no se proporciona
+    image = user_data.image or random.choice(PROFILE_PICTURES)
+
+    user = User(
+        email=user_data.email,
+        password=user_data.password,
+        name=user_data.name,
+        image=image
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
     return user
 
 
-# 2. Login de usuario (sin validación de contraseña)
+# 2. Login de usuario
 @router.post("/users/login", tags=["Users"], summary="User login")
 async def login(request: LoginRequest, session: SessionDep):
     query = select(User).where(User.email == request.email)
@@ -40,6 +48,7 @@ async def login(request: LoginRequest, session: SessionDep):
         "message": "Login successful",
         "is_logged": True  # Agregando is_logged a la respuesta
     }
+
 
 # 3. Listar todos los usuarios
 @router.get("/users", response_model=List[User], tags=["Users"], summary="List all users")
@@ -95,5 +104,3 @@ async def delete_user(user_id: int, session: SessionDep):
     session.delete(user_db)
     session.commit()
     return {"detail": "User deleted successfully"}
-
-

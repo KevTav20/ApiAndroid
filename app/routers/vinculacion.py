@@ -52,6 +52,50 @@ async def get_books_by_user(
 
     return books
 
+
+@router.get("/users/{user_id}/books/{book_id}/exists", tags=["Vinculation"])
+async def is_book_linked_to_user(
+        user_id: int,
+        book_id: int,
+        session: SessionDep
+):
+    # Verificar si el usuario existe
+    user_db = session.get(User, user_id)
+    if not user_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User doesn't exist"
+        )
+
+    # Consultar si el libro está vinculado al usuario
+    query = select(UserBooks).where(
+        UserBooks.user_id == user_id,
+        UserBooks.book_id == book_id
+    )
+    user_book = session.exec(query).first()
+
+    # Devolver el resultado
+    return {"exists": bool(user_book)}
+
+@router.get("/users/{user_id}/books/", tags=["Vinculation"])
+async def read_book_to_user(
+    user_id: int,
+    session: SessionDep,
+    book_status: Optional[StatusEnum] = Query(None)
+):
+    user_db = session.get(User, user_id)
+    if not user_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User doesn't exist"
+        )
+    query = select(UserBooks).where(UserBooks.user_id == user_id)
+    if book_status:
+        query = query.where(UserBooks.status == book_status)
+
+    user_books = session.exec(query).all()
+    return user_books
+
 @router.post("/user/{user_id}/books/{book_id}/link", tags=["Vinculation"], summary="Link a book to a user")
 async def link_book_to_user(
     user_id: int,
