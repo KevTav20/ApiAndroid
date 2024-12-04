@@ -14,6 +14,7 @@ class UserBooks(SQLModel, table=True):
     book_id: int = Field(foreign_key="book.id")
     user_id: int = Field(foreign_key="user.id")
     status: StatusEnum = Field(default=StatusEnum.INACTIVE)
+    book: "Book" = Relationship(back_populates="user_books")
 
 
 # Base de modelo para los libros (común entre la creación, actualización y el libro en sí)
@@ -40,6 +41,7 @@ class Book(BookBase, table=True):
     users: list["User"] = Relationship(
         back_populates="books", link_model=UserBooks
     )
+    user_books: list[UserBooks] = Relationship(back_populates="book")
 
 
 
