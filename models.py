@@ -41,6 +41,7 @@ class BookBase(SQLModel):
     num_pages: Optional[int] = Field(default=None)
     image: Optional[str] = Field(default=None)
     synopsis: Optional[str] = Field(default=None)
+    url: Optional[str] = Field(default=None)
 
 # Modelo para crear un libro
 class BookCreate(BookBase):

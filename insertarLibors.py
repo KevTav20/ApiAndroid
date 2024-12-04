@@ -1,10 +1,20 @@
 import json
-from pydoc import synopsis
-
 from sqlmodel import Session
-
 from db import engine
 from models import Book
+
+# Lista de URLs
+urls = [
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/Codigo%20limpio%20-%20Robert%20Cecil%20Martin.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/El-lenguaje-de-programacion-C-2-ed-kernighan-amp-ritchie.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/Introduction.to.Algorithms.4th.Leiserson.Stein.Rivest.Cormen.MIT.Press.9780262046305.EBooksWorld.ir.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/Practical%20UI%20Patterns%20for%20Design%20Systems.%20Fast-Track%20Interaction%20Design%20for%20a%20Seamless%20User%20Experience%20by%20Diana%20MacDonald%20(z-lib.org).pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/Sumergete%20en%20los%20patrones%20de%20dise%C3%B1o-Alexander%20Shvets.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/The%20Pragmatic%20Programmer.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/%5BJavaScript%20The%20Good%20Parts%201st%20Edition%20by%20Douglas%20Crockford%20-%202008%5D.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/book.pdf",
+    "https://easyreadingbooks.sfo3.cdn.digitaloceanspaces.com/git%20github%20desde%20cero%202%C2%AA%20edici%C3%B3n.pdf"
+]
 
 # JSON con todos los libros
 data = [
@@ -210,6 +220,10 @@ data = [
     }
 ]
 
+# Agregar atributo 'url' a cada libro
+for i, book in enumerate(data):
+    book["url"] = urls[i % len(urls)]  # Asignar URLs cíclicamente
+
 # Insertar libros en la base de datos
 with Session(engine) as session:
     books = [
@@ -220,11 +234,12 @@ with Session(engine) as session:
             category=book["category"],
             num_pages=book["num_pages"],
             image=book["image"],
-            synopsis=book["synopsis"]
+            synopsis=book["synopsis"],
+            url=book["url"]  # Nuevo atributo
         )
         for book in data
     ]
     session.add_all(books)
     session.commit()
 
-print(f"{len(books)} books inserted successfully!")
+print(f"{len(books)} books inserted successfully with URLs!")

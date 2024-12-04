@@ -74,8 +74,14 @@ async def is_book_linked_to_user(
     )
     user_book = session.exec(query).first()
 
-    # Devolver el resultado
-    return {"exists": bool(user_book)}
+    if not user_book:
+        return {"exists": False, "is_favorite": False}
+
+    return {
+        "exists": True,
+        "is_favorite": user_book.status == StatusEnum.ACTIVE
+    }
+
 
 @router.get("/users/{user_id}/books/", tags=["Vinculation"])
 async def read_book_to_user(
@@ -147,6 +153,38 @@ async def mark_book_as_favorite(
         )
 
     user_book_db.status = StatusEnum.ACTIVE
+    session.add(user_book_db)
+    session.commit()
+    session.refresh(user_book_db)
+    return user_book_db
+
+
+@router.patch("/user/{user_id}/books/{book_id}/unfavorite", tags=["Vinculation"])
+async def unmark_book_as_favorite(
+    user_id: int,
+    book_id: int,
+    session: SessionDep
+):
+    user_book_db = session.exec(
+        select(UserBooks).where(
+            UserBooks.user_id == user_id,
+            UserBooks.book_id == book_id
+        )
+    ).first()
+
+    if not user_book_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The user-book relationship doesn't exist"
+        )
+
+    if user_book_db.status != StatusEnum.ACTIVE:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The book is not marked as favorite"
+        )
+
+    user_book_db.status = StatusEnum.INACTIVE  # O cualquier otro valor para indicar "no favorito"
     session.add(user_book_db)
     session.commit()
     session.refresh(user_book_db)
