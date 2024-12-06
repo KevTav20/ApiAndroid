@@ -17,11 +17,12 @@ urls = [
 ]
 
 # JSON con todos los libros
+# JSON con los libros y las categorías ajustadas manualmente
 data = [
     {
         "author": "Harper Lee",
         "image": "https://m.media-amazon.com/images/I/81gepf1eMqL._SL1500_.jpg",
-        "category": "Fiction",
+        "category": "Ficción",
         "title": "To Kill a Mockingbird",
         "year": "1960",
         "num_pages": 324,
@@ -31,7 +32,7 @@ data = [
     {
         "author": "George Orwell",
         "image": "https://m.media-amazon.com/images/I/91jHOlKEPwL._SL1500_.jpg",
-        "category": "Dystopian",
+        "category": "Drama",
         "title": "1984",
         "year": "1949",
         "num_pages": 328,
@@ -51,7 +52,7 @@ data = [
     {
         "author": "F. Scott Fitzgerald",
         "image": "https://m.media-amazon.com/images/I/91TaDE-KbzL._SL1500_.jpg",
-        "category": "Fiction",
+        "category": "Ficción",
         "title": "The Great Gatsby",
         "year": "1925",
         "num_pages": 180,
@@ -61,7 +62,7 @@ data = [
     {
         "author": "J.D. Salinger",
         "image": "https://m.media-amazon.com/images/I/8125BDk3l9L._SL1500_.jpg",
-        "category": "Fiction",
+        "category": "Ficción",
         "title": "The Catcher in the Rye",
         "year": "1951",
         "num_pages": 214,
@@ -71,7 +72,7 @@ data = [
     {
         "author": "Herman Melville",
         "image": "https://m.media-amazon.com/images/I/61PBBKyZ1rL._SL1360_.jpg",
-        "category": "Adventure",
+        "category": "Acción",
         "title": "Moby-Dick",
         "year": "1851",
         "num_pages": 585,
@@ -81,7 +82,7 @@ data = [
     {
         "author": "Aldous Huxley",
         "image": "https://m.media-amazon.com/images/I/81fiJzvcB2L._SL1500_.jpg",
-        "category": "Dystopian",
+        "category": "Drama",
         "title": "Brave New World",
         "year": "1932",
         "num_pages": 268,
@@ -91,7 +92,7 @@ data = [
     {
         "author": "J.R.R. Tolkien",
         "image": "https://m.media-amazon.com/images/I/71S7Z+YhJFL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Fantasy",
+        "category": "Fantasía",
         "title": "The Hobbit",
         "year": "1937",
         "num_pages": 310,
@@ -101,7 +102,7 @@ data = [
     {
         "author": "Leo Tolstoy",
         "image": "https://m.media-amazon.com/images/I/91teiIZ5vwL._UF894,1000_QL80_.jpg",
-        "category": "Historical Fiction",
+        "category": "Drama",
         "title": "War and Peace",
         "year": "1869",
         "num_pages": 1225,
@@ -111,7 +112,7 @@ data = [
     {
         "author": "J.R.R. Tolkien",
         "image": "https://m.media-amazon.com/images/I/81j4C6j3dRL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Fantasy",
+        "category": "Fantasía",
         "title": "The Lord of the Rings",
         "year": "1954",
         "num_pages": 1178,
@@ -121,7 +122,7 @@ data = [
     {
         "author": "Anne Frank",
         "image": "https://m.media-amazon.com/images/I/81bLPNVfJTL._UF1000,1000_QL80_.jpg",
-        "category": "Biography",
+        "category": "Drama",
         "title": "The Diary of a Young Girl",
         "year": "1947",
         "num_pages": 283,
@@ -131,7 +132,7 @@ data = [
     {
         "author": "Ray Bradbury",
         "image": "https://m.media-amazon.com/images/I/61l8LHt4MeL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Dystopian",
+        "category": "Drama",
         "title": "Fahrenheit 451",
         "year": "1953",
         "num_pages": 158,
@@ -141,7 +142,7 @@ data = [
     {
         "author": "Oscar Wilde",
         "image": "https://m.media-amazon.com/images/I/71fm0Ap7JcL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Gothic Fiction",
+        "category": "Horror",
         "title": "The Picture of Dorian Gray",
         "year": "1890",
         "num_pages": 254,
@@ -151,7 +152,7 @@ data = [
     {
         "author": "Fyodor Dostoevsky",
         "image": "https://m.media-amazon.com/images/I/71OZJsgZzQL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Philosophical Fiction",
+        "category": "Drama",
         "title": "The Brothers Karamazov",
         "year": "1880",
         "num_pages": 796,
@@ -161,7 +162,7 @@ data = [
     {
         "author": "Fyodor Dostoevsky",
         "image": "https://m.media-amazon.com/images/I/41Xdvx45SFL._AC_UF1000,1000_QL80_.jpg",
-        "category": "Psychological Fiction",
+        "category": "Drama",
         "title": "Crime and Punishment",
         "year": "1866",
         "num_pages": 430,
@@ -171,7 +172,7 @@ data = [
     {
         "author": "Paulo Coelho",
         "image": "https://m.media-amazon.com/images/I/81ioPZFMeUL._UF894,1000_QL80_.jpg",
-        "category": "Fiction",
+        "category": "Ficción",
         "title": "The Alchemist",
         "year": "1988",
         "num_pages": 208,
@@ -191,7 +192,7 @@ data = [
     {
         "author": "Cormac McCarthy",
         "image": "https://m.media-amazon.com/images/I/817tOC36BUL.jpg",
-        "category": "Post-apocalyptic",
+        "category": "Drama",
         "title": "The Road",
         "year": "2006",
         "num_pages": 287,
@@ -201,7 +202,7 @@ data = [
     {
         "author": "Suzanne Collins",
         "image": "https://m.media-amazon.com/images/I/61I24wOsn8L._AC_UF1000,1000_QL80_.jpg",
-        "category": "Dystopian Fiction",
+        "category": "Drama",
         "title": "The Hunger Games",
         "year": "2008",
         "num_pages": 374,
@@ -211,7 +212,7 @@ data = [
     {
         "author": "John Green",
         "image": "https://m.media-amazon.com/images/I/61fbVx3W5cL.jpg",
-        "category": "Romance/Drama",
+        "category": "Romance",
         "title": "The Fault in Our Stars",
         "year": "2012",
         "num_pages": 313,
@@ -219,6 +220,7 @@ data = [
         "synopsis": "Hazel Grace, una joven con cáncer terminal, encuentra el amor en Augustus Waters, un sobreviviente de cáncer. Juntos exploran el significado de la vida, el amor y la mortalidad, mientras enfrentan los desafíos de su enfermedad."
     }
 ]
+
 
 # Agregar atributo 'url' a cada libro
 for i, book in enumerate(data):
